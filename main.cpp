@@ -4,8 +4,8 @@ namespace {
     class Minesweeper {
     public:
         Minesweeper(const size_t width, const size_t height)
-                : mWidth(width), mHeight(height),
-                  mTable(new char[width * height]) {
+                : width(width), height(height),
+                  table(new char[width * height]) {
             fillTable();
         }
 
@@ -18,7 +18,7 @@ namespace {
          */
 
         virtual ~Minesweeper() {
-            delete[] mTable;
+            delete[] table;
         }
 
         void countNeighbours() {
@@ -34,8 +34,8 @@ namespace {
             // step 1 goes here
         }
 
-        const size_t mWidth, mHeight;
-        char *mTable;
+        const size_t width, height;
+        char *table;
     };
 }
 
