@@ -22,16 +22,26 @@ namespace {
         }
 
         void countNeighbours() {
-            // step 2 goes here
+            // TODO: step 2 goes here
         }
 
         void printTable() const {
-            // step 3 goes here
+            for(int i=0; i<width; i++){
+                for(int j=0; j<height; j++){
+                    std::cout << *(table + i*width+j) << " ";
+                }
+                std::cout << std::endl;
+            }
         }
 
     private:
         void fillTable() {
-            // step 1 goes here
+            for(int i=0; i<width; i++){
+                for(int j=0; j<height; j++){
+                    //TODO: ne csak csillagot rakjon be
+                    *(table + i*width+j) = '*';
+                }
+            }
         }
 
         const size_t width, height;
@@ -41,9 +51,10 @@ namespace {
 
 int main() {
     try {
-        Minesweeper ms(100, 50);
+        Minesweeper ms(10, 10);
         ms.printTable();
         ms.countNeighbours();
+        std::cout << std::endl;
         ms.printTable();
     } catch (const std::bad_alloc &e) {
         std::cerr << "Couldn't allocate enough memory for minesweeper table" << std::endl;
