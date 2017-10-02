@@ -23,6 +23,19 @@ namespace {
 
         void countNeighbours() {
             // TODO: step 2 goes here
+            //char tempTable[width * height] = new char[width * height];
+            //char tempTable[width * height];
+            //char *tempTablePointer = tempTable;
+            //tempTable(new char[width * height]);
+            for(int i=0; i<width; i++) {
+                for (int j = 0; j < height; j++) {
+                    int counter = 0;
+
+                    *(table + i*width+j) = '1';
+                }
+            }
+            //*table = *tempTable;
+            //std::cout << *(tempTable + 99);
         }
 
         void printTable() const {
@@ -36,10 +49,12 @@ namespace {
 
     private:
         void fillTable() {
+            srand (time(NULL));
+            int luckFactor;
             for(int i=0; i<width; i++){
                 for(int j=0; j<height; j++){
-                    //TODO: ne csak csillagot rakjon be
-                    *(table + i*width+j) = '*';
+                    luckFactor = rand() % 100 + 1;
+                    *(table + i*width+j) = (luckFactor > 15 ? '.' : '*');
                 }
             }
         }
