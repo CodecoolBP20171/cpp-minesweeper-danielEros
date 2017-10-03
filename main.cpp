@@ -20,6 +20,7 @@ namespace {
 
         virtual ~Minesweeper() {
             delete[] table;
+            delete[] isRevealedTable;
         }
 
         void countNeighbours() {
