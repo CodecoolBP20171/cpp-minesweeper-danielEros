@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 namespace {
     class Minesweeper {
@@ -27,11 +28,14 @@ namespace {
             //char tempTable[width * height];
             //char *tempTablePointer = tempTable;
             //tempTable(new char[width * height]);
-            for(int i=0; i<width; i++) {
-                for (int j = 0; j < height; j++) {
+            for(int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
                     int counter = 0;
-
-                    *(table + i*width+j) = '1';
+                    if(*(table + i*width+j) != '*'){
+//                        for(int k = std::min(0, i-1); k < std::max(); k++){
+//                            //for(int l = )
+//                        }
+                    }
                 }
             }
             //*table = *tempTable;
@@ -39,8 +43,8 @@ namespace {
         }
 
         void printTable() const {
-            for(int i=0; i<width; i++){
-                for(int j=0; j<height; j++){
+            for(int i=0; i<height; i++){
+                for(int j=0; j<width; j++){
                     std::cout << *(table + i*width+j) << " ";
                 }
                 std::cout << std::endl;
@@ -51,12 +55,15 @@ namespace {
         void fillTable() {
             srand (time(NULL));
             int luckFactor;
-            for(int i=0; i<width; i++){
-                for(int j=0; j<height; j++){
+            for(int i=0; i<height; i++){
+                for(int j=0; j<width; j++){
                     luckFactor = rand() % 100 + 1;
-                    *(table + i*width+j) = (luckFactor > 15 ? '.' : '*');
+                    // increment pointer, and dereference unincremented address
+                    *table++ = (luckFactor > 15 ? '.' : '*');
                 }
             }
+            // resetting the pointer to the 0th element of table
+            table -= width * height * sizeof(*table);
         }
 
         const size_t width, height;
@@ -66,7 +73,7 @@ namespace {
 
 int main() {
     try {
-        Minesweeper ms(10, 10);
+        Minesweeper ms(20, 10);
         ms.printTable();
         ms.countNeighbours();
         std::cout << std::endl;
