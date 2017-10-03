@@ -6,7 +6,7 @@ namespace {
     public:
         Minesweeper(const size_t width, const size_t height)
                 : width(width), height(height),
-                  table(new char[width * height]) {
+                  table(new char[width * height]), isRevealedTable(new bool[width * height]) {
             fillTable();
         }
 
@@ -50,6 +50,19 @@ namespace {
             }
         }
 
+        void printGameTable() const {
+            for(int i=0; i<height; i++){
+                for(int j=0; j<width; j++){
+                    if(*(isRevealedTable + i*width+j)){
+                    std::cout << *(table + i*width+j) << " ";
+                    } else {
+                        std::cout << '#' << " ";
+                    }
+                }
+                std::cout << std::endl;
+            }
+        }
+
         std::vector<int> getUserInput(){
             int w, h;
             std::vector<int> result;
@@ -73,11 +86,13 @@ namespace {
                 exit(0);
             } else {
                 *(table + h*width+w) = '.';
+                *(isRevealedTable + h*width+w) = true;
                 for(int k = std::max(0, h-1); k <= std::min((int)height, h+1); k++){
                     for(int l = std::max(0, w-1); l <= std::min((int)width, w+1); l++){
                         if(*(table + k*width+l) == '0') {
                             reveal(l, k);
                         }
+                        *(isRevealedTable + k*width+l) = true;
                     }
                 }
             }
@@ -93,14 +108,17 @@ namespace {
                     luckFactor = rand() % 100 + 1;
                     // increment pointer, and dereference unincremented address
                     *table++ = (luckFactor > mineRatio ? '.' : '*');
+                    *isRevealedTable++ = false;
                 }
             }
-            // resetting the pointer to the 0th element of table
+            // resetting the pointers to the 0th element of tables
             table -= width * height * sizeof(*table);
+            isRevealedTable -= width * height * sizeof(*isRevealedTable);
         }
 
         const size_t width, height;
         char *table;
+        bool *isRevealedTable;
     };
 }
 
@@ -111,11 +129,13 @@ int main() {
         ms.countNeighbours();
         std::cout << std::endl;
         ms.printTable();
+        std::cout << std::endl;
+        ms.printGameTable();
         while (true) {
             std::vector<int> userCoordinates = ms.getUserInput();
             ms.reveal(userCoordinates[0], userCoordinates[1]);
             std::cout << std::endl;
-            ms.printTable();
+            ms.printGameTable();
         }
     } catch (const std::bad_alloc &e) {
         std::cerr << "Couldn't allocate enough memory for minesweeper table" << std::endl;
