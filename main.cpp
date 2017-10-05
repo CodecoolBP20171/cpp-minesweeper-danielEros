@@ -55,7 +55,7 @@ namespace {
             for(int i=0; i<height; i++){
                 for(int j=0; j<width; j++){
                     if(*(isRevealedTable + i*width+j)){
-                    std::cout << *(table + i*width+j) << " ";
+                        std::cout << *(table + i*width+j) << " ";
                     } else {
                         std::cout << '#' << " ";
                     }
@@ -87,16 +87,27 @@ namespace {
                 exit(0);
             } else {
                 *(table + h*width+w) = '.';
+                if(*(isRevealedTable + h*width+w) == false) {
+                    numberOfRevealedCells++;
+                }
                 *(isRevealedTable + h*width+w) = true;
-                for(int k = std::max(0, h-1); k <= std::min((int)height, h+1); k++){
-                    for(int l = std::max(0, w-1); l <= std::min((int)width, w+1); l++){
+                for(int k = std::max(0, h-1); k <= std::min((int)height-1, h+1); k++){
+                    for(int l = std::max(0, w-1); l <= std::min((int)width-1, w+1); l++){
+                        std::cout << k << l << std::endl;
                         if(*(table + k*width+l) == '0') {
                             reveal(l, k);
+                        }
+                        if(*(isRevealedTable + k*width+l) == false) {
+                            numberOfRevealedCells++;
                         }
                         *(isRevealedTable + k*width+l) = true;
                     }
                 }
             }
+        }
+
+        bool isWon(){
+            return numberOfRevealedCells == width * height;
         }
 
     private:
@@ -120,12 +131,14 @@ namespace {
         const size_t width, height;
         char *table;
         bool *isRevealedTable;
+        int numberOfRevealedCells = 0;
     };
 }
 
+
 int main() {
     try {
-        Minesweeper ms(70, 15);
+        Minesweeper ms(5, 5);
         ms.printTable();
         ms.countNeighbours();
         std::cout << std::endl;
@@ -137,6 +150,10 @@ int main() {
             ms.reveal(userCoordinates[0], userCoordinates[1]);
             std::cout << std::endl;
             ms.printGameTable();
+            if(ms.isWon()){
+                std::cout << "Congratulations, you won!" << std::endl;
+                exit(0);
+            }
         }
     } catch (const std::bad_alloc &e) {
         std::cerr << "Couldn't allocate enough memory for minesweeper table" << std::endl;
